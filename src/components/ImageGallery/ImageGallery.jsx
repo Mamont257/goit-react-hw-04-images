@@ -6,14 +6,15 @@ import { ImageGal } from "./ImageGallery.styled";
 import { Loader } from "components/Loader/Loader";
 import { Button } from "components/Button/Button";
 
+let arrImg = [];
 
 export function ImageGallery(props) {
     const [images, setImages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isButton, setIsButton] = useState(false);
-    const [isNew, setIsNew] = useState(false);
     // console.log(props.page);
 
+    
 
     useEffect(() => {
         const { imageName, page } = props;
@@ -23,17 +24,37 @@ export function ImageGallery(props) {
         //     this.setState({ isLoading: true, images: [] });
         //     this.fetchImages(imageName, page, prevState);
         // }
-        setIsLoading(true)
-        setImages([])
-        fetchImages(imageName,page)
+        // console.log(imageName);
+        if (imageName) {
+            setIsLoading(true)
+            // setImages([])
+            fetchImages(imageName, page)
+        }
         // if (prevProps.imageName !== imageName) {
         //     this.setState({ isNew: true})
         // }
-    }, [props])
+        console.log("NoClear");
+        return () => {
+            console.log("Clear");
+
+            arrImg = [];
+            // setImages([]);
+        }
+    }, [props.imageName])
+
+    // useEffect(() => {
+    //     const { imageName, page } = props;
+    //     if (imageName) {
+    //         setIsLoading(true)
+    //         // setImages([])
+    //         fetchImages(imageName, page)
+    //     }
+    // }, [props.page])
 
 
 
-    async function fetchImages(imageName, page, prevState) {
+
+    async function fetchImages(imageName, page) {
         const BASE_URL = 'https://pixabay.com/api/';
         const KEY = '32844399-402b025363825ff7850242d10';
 
@@ -42,38 +63,23 @@ export function ImageGallery(props) {
                 throw new Error(resp.status);
             }
             return resp.json();
-        }).then(images => {
-            if (!images.total) {
+        }).then(imagesArr => {
+            if (!imagesArr.total) {
                 setImages([])
                 setIsButton(false)
-                // this.setState({ images: [], isButton: false})
                 return toast.error('Bad request')
             } else {
-                setImages(images.hits);
+                // console.log(arrImg);
+                // arrImg = imagesArr.hits
+                setImages([...arrImg, ...imagesArr.hits])
                 setIsButton(true);
             }
 
-            // if (this.state.isNew) {
-            //     this.setState({ images: images.hits, isButton: true, isNew: false })
-            // } else {
-            //     this.setState({ images: [...prevState.images, ...images.hits], isButton: true })
-            // }
-
-
-            setIsButton(images.hits.length === 12)
-
-            // this.setState({
-            //     isButton: images.hits.length === 12,
-            // });
-
+            setIsButton(imagesArr.hits.length === 12)
         }).finally(
             setIsLoading(false)
-            // this.setState({isLoading: false})
         )
     }
-
-
-
 
 
 
