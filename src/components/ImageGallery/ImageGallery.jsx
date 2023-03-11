@@ -1,57 +1,25 @@
 import { ImageGalleryItem } from "components/ImageGalleryItem/ImageGalleryItem";
-import React, { Component, useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { ImageGal } from "./ImageGallery.styled";
 import { Loader } from "components/Loader/Loader";
 import { Button } from "components/Button/Button";
 
-let arrImg = [];
-
 export function ImageGallery(props) {
     const [images, setImages] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isButton, setIsButton] = useState(false);
-    // console.log(props.page);
-
-    
 
     useEffect(() => {
         const { imageName, page } = props;
 
-        // console.log(imageName);
-        // if (prevProps.imageName !== imageName || prevProps.page !== page) {
-        //     this.setState({ isLoading: true, images: [] });
-        //     this.fetchImages(imageName, page, prevState);
-        // }
-        // console.log(imageName);
         if (imageName) {
             setIsLoading(true)
-            // setImages([])
             fetchImages(imageName, page)
         }
-        // if (prevProps.imageName !== imageName) {
-        //     this.setState({ isNew: true})
-        // }
-        console.log("NoClear");
-        return () => {
-            console.log("Clear");
 
-            arrImg = [];
-            // setImages([]);
-        }
-    }, [props.imageName])
-
-    // useEffect(() => {
-    //     const { imageName, page } = props;
-    //     if (imageName) {
-    //         setIsLoading(true)
-    //         // setImages([])
-    //         fetchImages(imageName, page)
-    //     }
-    // }, [props.page])
-
-
+    }, [props])
 
 
     async function fetchImages(imageName, page) {
@@ -68,10 +36,14 @@ export function ImageGallery(props) {
                 setImages([])
                 setIsButton(false)
                 return toast.error('Bad request')
+            }
+
+            //Перевірка на 1 запит
+            if (page === 1) {
+                setImages([...imagesArr.hits])
+                setIsButton(true);
             } else {
-                // console.log(arrImg);
-                // arrImg = imagesArr.hits
-                setImages([...arrImg, ...imagesArr.hits])
+                setImages(prevState => [...prevState, ...imagesArr.hits]);
                 setIsButton(true);
             }
 

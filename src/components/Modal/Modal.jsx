@@ -1,41 +1,41 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Overlay, ModalWindow } from './Modal.styled';
-// import { Overlay, ModalWindow } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 let scrollPosition = 0;
 
-export class Modal extends Component {
-    componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-    this.disableScroll();
-  }
+export function Modal({largeImageURL, tags, toggleModal}) {
+  
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    disableScroll();
 
-    componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-    this.enableScroll();
-  }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      enableScroll();
+    }
+  },[])
 
-  handleKeyDown = e => {
+  const handleKeyDown = e => {
       if (e.code === 'Escape') {
-      this.props.toggleModal();
+      toggleModal();
     }
   };
 
-  handleBackdropClick = e => {
+  const handleBackdropClick = e => {
     if (e.target === e.currentTarget) {
-      this.props.toggleModal();
+      toggleModal();
     }
   };
 
-  enableScroll = () => {
+  const enableScroll = () => {
     document.body.style.cssText = '';
     window.scroll({ top: scrollPosition });
     document.documentElement.style.scrollBehavior = '';
   };
 
-  disableScroll = () => {
+  const disableScroll = () => {
     scrollPosition = window.scrollY;
     document.body.style.cssText = `
       position: fixed;
@@ -48,13 +48,10 @@ export class Modal extends Component {
     document.documentElement.style.scrollBehavior = 'unset';
   };
 
-  render() {
-      const { largeImageURL, tags } = this.props;
       return createPortal(
-      <Overlay onClick={this.handleBackdropClick}>
+      <Overlay onClick={handleBackdropClick}>
         <ModalWindow src={largeImageURL} alt={tags} />
       </Overlay>,
       modalRoot
     );
-  }
 }

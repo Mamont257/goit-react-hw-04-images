@@ -1,13 +1,11 @@
 import { Modal } from "components/Modal/Modal";
-import React, { Component, useState, useEffect } from "react";
+import React, {useState} from "react";
 import PropTypes from 'prop-types';
 import { ImageGalItem, ImageGalItemImage } from "./ImageGalleryItem.styled";
 
 
 export function ImageGalleryItem({image: {webformatURL, largeImageURL, tags}}) {
   const [isModal, setIsModal] = useState(false);
-// console.log(webformatURL, largeImageURL, tags);
-
 
   function toggleModal() {
     setIsModal(!isModal);
