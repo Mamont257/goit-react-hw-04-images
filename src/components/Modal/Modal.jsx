@@ -15,8 +15,10 @@ export function Modal({largeImageURL, tags, toggleModal}) {
       window.removeEventListener('keydown', handleKeyDown);
       enableScroll();
     }
+  // eslint-disable-next-line no-use-before-define, react-hooks/exhaustive-deps
   },[])
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleKeyDown = e => {
       if (e.code === 'Escape') {
       toggleModal();
