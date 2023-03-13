@@ -1,23 +1,30 @@
-import React, {useState} from "react";
+import React, {useState, useReducer} from "react";
 import { Searchbar } from "./Searchbar/Searchbar";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { ImageGallery } from "./ImageGallery/ImageGallery";
 
-
+function counterReducer(prevState, action) {
+  if (action.type === "plus") {
+    return prevState + action.payload
+  } else if (action.type === "start") {
+    return 1
+  }
+}
 
 export function App() {
   const [imagesName, setImagesName] = useState("");
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
+  const [page, setPage] = useReducer(counterReducer, 1)
 
   function handleSubmit(imageName) {
     setImagesName(imageName);
-    setPage(1);
+    setPage({type: 'start'});
   }
 
-  function handleClick() {
-    setPage(prevState => prevState+1)
-  };
+  // function handleClick() {
+  //   setPage(prevState => prevState+1)
+  // };
 
     return (
       <div>
@@ -26,7 +33,7 @@ export function App() {
         <ImageGallery
           imageName={imagesName}
           page={page}
-          handleClick={handleClick}
+          handleClick={() => setPage({type: 'plus', payload: 1})}
         />
       </div>
     )
